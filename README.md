@@ -99,7 +99,7 @@ O projeto utiliza as **10 Heurísticas de Usabilidade de Jakob Nielsen**, relaci
 Abra diretamente no navegador:
 
 ```text
-[ambulante-conecta-prototipo-fundo-alterado.html](https://franksbjr4-eng.github.io/ambulante-conecta/)
+https://franksbjr4-eng.github.io/ambulante-conecta/
 ```
 
 
