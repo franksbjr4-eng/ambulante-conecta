@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b5d4f"><meta name="description" content="Cadastro e diagnóstico do trabalhador ambulante.">
+  <link rel="manifest" href="manifest.json"><link rel="stylesheet" href="styles.css"><script defer src="script.js"></script>
+  <title>Cadastro | Ambulante Conecta</title>
+</head>
+<body>
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+<header class="site-header"><div class="header-inner"><a class="brand" href="cadastro.html" aria-label="Ambulante Conecta - início"><span class="brand-mark">AC</span><span>Ambulante Conecta</span></a><div class="header-actions"><span class="badge info" aria-label="Protótipo">Protótipo</span></div></div></header>
+<main id="main" class="page"><div class="container">
+  <div id="live-region" class="grid" aria-live="polite" aria-atomic="true"></div>
+  <div id="network-status" class="notice info" role="status"></div>
+  <section class="hero"><div class="eyebrow">Cadastro e diagnóstico</div><h1>Vamos conhecer sua atividade</h1><p class="muted">Preencha uma etapa por vez. Você poderá voltar e corrigir os dados antes de concluir.</p></section>
+  <div class="stepper" aria-label="Progresso do cadastro"><div class="step active"><span class="circle">1</span>Dados pessoais</div><div class="step"><span class="circle">2</span>Atividade</div><div class="step"><span class="circle">3</span>Local de venda</div><div class="step"><span class="circle">4</span>Revisão</div></div>
+  <div class="progress-wrap"><div id="step-status" class="help" role="status">Etapa 1 de 4</div><div class="progress-track" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div></div>
+  <form id="cadastro-form" class="card" novalidate>
+    <section data-step="1"><div class="card-header"><div><h2>1. Dados pessoais</h2><p class="muted">Use seus dados verdadeiros. O protótipo não envia nada a um servidor.</p></div><span class="badge info">ℹ Informação</span></div>
+      <div class="form-grid"><div class="field"><label for="nome">Nome completo</label><input id="nome" name="nome" required autocomplete="name" placeholder="Ex.: Maria da Silva"><div id="nome-error" class="error-text" hidden>Informe seu nome completo.</div></div>
+      <div class="field"><label for="cpf">CPF</label><input id="cpf" name="cpf" required inputmode="numeric" autocomplete="off" placeholder="000.000.000-00"><div id="cpf-error" class="error-text" hidden>Informe o CPF para continuar.</div></div></div>
+      <div class="actions end" style="margin-top:1rem"><button class="button primary" type="button" data-next>Continuar <span aria-hidden="true">→</span></button></div>
+    </section>
+    <section data-step="2" hidden><div class="card-header"><div><h2>2. Sua atividade</h2><p class="muted">Conte o que você vende e como trabalha atualmente.</p></div></div>
+      <div class="form-grid"><div class="field"><label for="atividade">Tipo de atividade</label><select id="atividade" required><option value="">Selecione</option><option>Alimentos e bebidas</option><option>Vestuário e acessórios</option><option>Artesanato</option><option>Outros produtos</option></select><div id="atividade-error" class="error-text" hidden>Selecione uma atividade.</div></div>
+      <div class="field"><label for="tempo">Tempo na atividade</label><select id="tempo" required><option value="">Selecione</option><option>Menos de 1 ano</option><option>1 a 3 anos</option><option>4 a 10 anos</option><option>Mais de 10 anos</option></select><div id="tempo-error" class="error-text" hidden>Informe há quanto tempo você trabalha.</div></div></div>
+      <div class="actions end" style="margin-top:1rem"><button class="button secondary" type="button" data-prev>Voltar</button><button class="button primary" type="button" data-next>Continuar →</button></div>
+    </section>
+    <section data-step="3" hidden><div class="card-header"><div><h2>3. Local pretendido</h2><p class="muted">Escolha uma referência. Você poderá consultar os pontos disponíveis no mapa.</p></div></div>
+      <div class="form-grid"><div class="field"><label for="zona">Zona de interesse</label><select id="zona" required><option value="">Selecione</option><option>Centro</option><option>Zona Centro-Sul</option><option>Zona Norte</option><option>Zona Leste</option></select><div id="zona-error" class="error-text" hidden>Escolha uma zona de interesse.</div></div>
+      <div class="field"><label for="referencia">Ponto de referência</label><input id="referencia" required placeholder="Ex.: próximo a um terminal ou feira"><div id="referencia-error" class="error-text" hidden>Informe um ponto de referência.</div></div></div>
+      <div class="notice info" style="margin-top:1rem"><span class="symbol">⌖</span><div><strong>Reconhecimento em vez de memorização</strong><div class="muted">Depois do cadastro, o mapa mostra os pontos e suas situações, sem exigir que você decore endereços.</div></div></div>
+      <div class="actions end" style="margin-top:1rem"><button class="button secondary" type="button" data-prev>Voltar</button><button class="button primary" type="button" data-next>Revisar →</button></div>
+    </section>
+    <section data-step="4" hidden><div class="card-header"><div><h2>4. Revise antes de concluir</h2><p class="muted">Confira as informações e avance somente quando estiver tudo correto.</p></div></div>
+      <div class="notice warning"><span class="symbol">⚠</span><div><strong>Antes de enviar</strong><div class="muted">Em um sistema real, seus dados pessoais seriam tratados conforme a LGPD e protegidos por autenticação e controle de acesso.</div></div></div>
+      <div class="actions end" style="margin-top:1rem"><button class="button secondary" type="button" data-prev>Corrigir dados</button><button class="button primary" type="submit">Concluir cadastro</button></div>
+    </section>
+  </form>
+
+  <section class="nav-grid" aria-label="Outras áreas do sistema">
+    <a class="nav-tile" href="orientacao.html"><span class="tile-icon">✓</span><div><strong>Orientação</strong><span class="muted">MEI e licença municipal</span></div></a>
+    <a class="nav-tile" href="mapa.html"><span class="tile-icon">⌖</span><div><strong>Pontos de venda</strong><span class="muted">Mapa e solicitações</span></div></a>
+    <a class="nav-tile" href="comunicacao.html"><span class="tile-icon">✉</span><div><strong>Comunicação</strong><span class="muted">Prefeitura e sindicato</span></div></a>
+    <a class="nav-tile" href="gestor.html"><span class="tile-icon">✓</span><div><strong>Gestor</strong><span class="muted">Aprovar solicitações</span></div></a>
+    <a class="nav-tile" href="dashboard.html"><span class="tile-icon">▥</span><div><strong>Indicadores</strong><span class="muted">Visão agregada</span></div></a>
+  </section>
+</div></main>
+<nav class="bottom-nav" aria-label="Navegação principal"><div class="bottom-nav-inner"><a class="active" aria-current="page" href="cadastro.html">Cadastro</a><a href="orientacao.html">Orientação</a><a href="mapa.html">Pontos</a><a href="comunicacao.html">Comunicar</a></div></nav>
+</body></html>
