@@ -1,9 +1,0 @@
-{
-  "name": "Ambulante Conecta",
-  "short_name": "Ambulante Conecta",
-  "start_url": "cadastro.html",
-  "display": "standalone",
-  "background_color": "#f5f7f8",
-  "theme_color": "#0b5d4f",
-  "description": "Protótipo responsivo para formalização, organização e comunicação de trabalhadores ambulantes de Manaus."
-}
