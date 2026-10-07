@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solicitação — Ambulante Conecta</title>
+  <link rel="icon" href="img/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-pagina="situacao">
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="index.html" aria-label="Ambulante Conecta, página inicial">
+        <img class="logo" src="img/logo.png" alt="Ambulante Conecta">
+      </a>
+      <nav class="nav" aria-label="Principal" id="nav"></nav>
+      <p class="sidebar-footer">Seus dados pessoais são tratados conforme a LGPD.</p>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <img class="topbar-logo" src="img/logo.png" alt="Ambulante Conecta">
+        <h1 class="topbar-title">Solicitação</h1>
+      </header>
+      <main class="content" id="conteudo">
+
+        <div class="section-title page-head"><div><h2>Solicitação de ponto</h2><p class="muted">Peça um ponto de venda e acompanhe o andamento por aqui.</p></div></div>
+
+        <div class="card" id="semCadastro" hidden>
+          <p class="help">Para solicitar um ponto, complete seu cadastro primeiro.</p>
+          <div class="btn-row"><a class="btn btn-primary" href="cadastro.html">Fazer meu cadastro</a></div>
+        </div>
+
+        <div class="card form-card" id="nova" hidden>
+          <h3>Nova solicitação</h3>
+          <form id="formSolicitacao" novalidate>
+            <div class="grid grid-2 mt">
+              <div class="field">
+                <label for="local">Bairro ou região *</label>
+                <input id="local" name="local" placeholder="Ex.: Centro" aria-describedby="erro-local">
+                <small class="msg-erro" id="erro-local" role="alert"></small>
+              </div>
+              <div class="field">
+                <label for="turno">Turno de trabalho *</label>
+                <select id="turno" name="turno" aria-describedby="erro-turno">
+                  <option value="">Selecione</option><option>Manhã</option><option>Tarde</option><option>Noite</option><option>Dia todo</option>
+                </select>
+                <small class="msg-erro" id="erro-turno" role="alert"></small>
+              </div>
+            </div>
+            <div class="form-actions"><button class="btn btn-primary" type="submit">Enviar solicitação</button></div>
+          </form>
+        </div>
+
+        <div id="andamento" hidden>
+          <div class="card">
+            <div class="notice"><span class="icon-circle blue" aria-hidden="true">◷</span><div><strong>Solicitação enviada</strong><p class="muted">Seu pedido foi registrado e aguarda análise da equipe responsável.</p></div></div>
+            <ol class="progress mt" aria-label="Andamento da solicitação">
+              <li class="current" aria-current="step"><span class="bubble">1</span><span class="bubble-label">Solicitada</span></li>
+              <li><span class="bubble">2</span><span class="bubble-label">Em análise</span></li>
+              <li><span class="bubble">3</span><span class="bubble-label">Aprovada</span></li>
+              <li><span class="bubble">4</span><span class="bubble-label">Liberada</span></li>
+            </ol>
+          </div>
+          <div class="grid grid-2 mt">
+            <div class="card">
+              <h3>Detalhes</h3>
+              <dl class="detalhes">
+                <div><dt>Data da solicitação</dt><dd id="d-data"></dd></div>
+                <div><dt>Local solicitado</dt><dd id="d-local"></dd></div>
+                <div><dt>Turno</dt><dd id="d-turno"></dd></div>
+              </dl>
+              <div class="btn-row"><button class="btn btn-ghost" id="cancelar" type="button">Cancelar solicitação</button></div>
+            </div>
+            <div class="card">
+              <h3>Próximo retorno</h3>
+              <p class="muted">Você receberá um aviso na página Comunicação quando houver atualização.</p>
+              <div class="btn-row"><a class="btn btn-primary" href="comunicacao.html">Ver mensagens</a></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <nav class="mobile-nav" aria-label="Principal (celular)" id="mobileNav"></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="js/app.js"></script>
+  <script src="js/paginas.js"></script>
+</body>
+</html>

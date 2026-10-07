@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Organize sua atividade, acompanhe sua formalização e encontre pontos de venda em Manaus.">
+  <title>Início — Ambulante Conecta</title>
+    <link rel="icon" href="img/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="index.html" aria-label="Ambulante Conecta, página inicial">
+        <img class="logo" src="img/logo.png" alt="Ambulante Conecta">
+      </a>
+      <nav class="nav" aria-label="Principal" id="nav"></nav>
+      <p class="sidebar-footer">Seus dados pessoais são tratados conforme a LGPD.</p>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <img class="topbar-logo" src="img/logo.png" alt="Ambulante Conecta">
+        <h1 class="topbar-title">Início</h1>
+      </header>
+
+      <main class="content" id="conteudo">
+        <section class="hero" aria-labelledby="saudacao">
+          <div>
+            <h2 id="saudacao">Bem-vindo ao Ambulante Conecta</h2>
+            <p>Organize sua atividade, acompanhe sua formalização e encontre pontos de venda disponíveis em Manaus.</p>
+          </div>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="cadastro.html">Cadastrar dados</a>
+            <a class="btn btn-green" href="situacao.html#nova">Solicitar ponto</a>
+          </div>
+        </section>
+
+        <section aria-label="Resumo da sua situação">
+          <ul class="grid grid-4 stats" id="stats"></ul>
+        </section>
+
+        <section aria-labelledby="t-mapa">
+          <div class="section-title">
+            <h2 id="t-mapa">Pontos de venda em Manaus</h2>
+            <a class="btn btn-ghost" href="mapa.html">Ver mapa completo</a>
+          </div>
+          <div class="card map-card">
+            <!-- Espaço reservado para o Google Maps: inicialize a API dentro de #map -->
+            <div class="map-slot" id="map" role="region" aria-label="Mapa de pontos de venda"></div>
+          </div>
+        </section>
+
+        <section aria-labelledby="t-acoes">
+          <div class="section-title"><h2 id="t-acoes">Ações rápidas</h2></div>
+          <div class="grid grid-4">
+            <a class="card action" href="formalizacao.html"><strong>Formalização</strong><p>Veja o passo a passo do MEI e da licença municipal.</p></a>
+            <a class="card action" href="cadastro.html"><strong>Meus dados</strong><p>Atualize suas informações com segurança.</p></a>
+            <a class="card action" href="situacao.html"><strong>Minha situação</strong><p>Acompanhe sua solicitação de ponto.</p></a>
+            <a class="card action" href="comunicacao.html"><strong>Comunicação</strong><p>Fale com a prefeitura ou o sindicato.</p></a>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Principal (celular)" id="mobileNav"></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
