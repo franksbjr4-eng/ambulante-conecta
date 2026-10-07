@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formalização — Ambulante Conecta</title>
+  <link rel="icon" href="img/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-pagina="formalizacao">
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="index.html" aria-label="Ambulante Conecta, página inicial">
+        <img class="logo" src="img/logo.png" alt="Ambulante Conecta">
+      </a>
+      <nav class="nav" aria-label="Principal" id="nav"></nav>
+      <p class="sidebar-footer">Seus dados pessoais são tratados conforme a LGPD.</p>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <img class="topbar-logo" src="img/logo.png" alt="Ambulante Conecta">
+        <h1 class="topbar-title">Formalização</h1>
+      </header>
+      <main class="content" id="conteudo">
+
+        <div class="section-title page-head"><div><h2>Formalização</h2><p class="muted">Dois caminhos para regularizar sua atividade. Marque cada etapa quando concluir.</p></div><span class="status gray" id="contagem">0 de 2 etapas</span></div>
+        <div class="grid grid-2">
+          <article class="card etapa">
+            <div class="etapa-top"><span class="icon-circle blue" aria-hidden="true">1</span><span class="status gray" id="status-mei">Não iniciada</span></div>
+            <h3>MEI Federal</h3>
+            <p>Registro do seu negócio como Microempreendedor Individual, feito no portal do governo federal.</p>
+            <div class="btn-row">
+              <a class="btn btn-primary" href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor" target="_blank" rel="noopener">Abrir Portal do Empreendedor</a>
+              <button class="btn btn-ghost" id="toggle-mei" type="button">Marcar como concluída</button>
+            </div>
+          </article>
+          <article class="card etapa">
+            <div class="etapa-top"><span class="icon-circle blue" aria-hidden="true">2</span><span class="status gray" id="status-licenca">Não iniciada</span></div>
+            <h3>Licença Municipal</h3>
+            <p>Autorização da Prefeitura de Manaus para exercer sua atividade no local definido.</p>
+            <div class="btn-row">
+              <a class="btn btn-primary" href="situacao.html#nova">Solicitar ponto de venda</a>
+              <button class="btn btn-ghost" id="toggle-licenca" type="button">Marcar como concluída</button>
+            </div>
+          </article>
+        </div>
+        <section class="card mt" aria-labelledby="t-docs">
+          <h3 id="t-docs">Documentos para separar</h3>
+          <p class="muted">Marque o que você já tem. Esta lista é um exemplo: confirme os documentos exigidos com a Prefeitura de Manaus.</p>
+          <ul class="doc-list" id="docs"></ul>
+        </section>
+      </main>
+    </div>
+  </div>
+  <nav class="mobile-nav" aria-label="Principal (celular)" id="mobileNav"></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="js/app.js"></script>
+  <script src="js/paginas.js"></script>
+</body>
+</html>
