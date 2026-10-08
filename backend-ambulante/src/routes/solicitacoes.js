@@ -1,20 +1,20 @@
 // RF04 — Solicitação de ponto de venda (RN01 a RN03)
 // Tabela: solicitacao (id_solicitacao, id_ambulante, id_ponto, data_solicitacao, status_solicitacao,
 //                      justificativa, data_avaliacao, id_avaliador)
-// O GET /api/solicitacoes continua no solicitacaoController existente.
 const express = require("express");
+const { autenticar, exigirPerfil } = require("../middlewares/auth");
 
 const normalizar = (s) => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
 
 module.exports = (pool) => {
   const router = express.Router();
 
-  router.post("/solicitacoes", async (req, res) => {
-    // RN01: quando o login existir, o ambulante virá do token (req.usuario), não do corpo
-    const ambulanteId = Number(req.body?.ambulante_id);
+  // POST /api/solicitacoes  { ponto_id }   (RN01: exige login de ambulante)
+  router.post("/solicitacoes", autenticar, exigirPerfil("ambulante"), async (req, res) => {
+    const ambulanteId = req.usuario.ambulante_id; // vem do token, nunca do corpo da requisição
     const pontoId = Number(req.body?.ponto_id);
-    if (!Number.isInteger(ambulanteId) || ambulanteId <= 0 || !Number.isInteger(pontoId) || pontoId <= 0) {
-      return res.status(400).json({ erro: "Informe ambulante_id e ponto_id válidos." });
+    if (!Number.isInteger(pontoId) || pontoId <= 0) {
+      return res.status(400).json({ erro: "Informe um ponto_id válido." });
     }
     try {
       const amb = await pool.query("SELECT id, possui_mei, cnpj_mei FROM ambulantes WHERE id = $1", [ambulanteId]);
