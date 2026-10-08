@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cadastro — Ambulante Conecta</title>
-    <link rel="icon" href="logo.png">
+  <link rel="icon" href="img/logo.png">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -46,7 +46,7 @@
                 </div>
                 <div class="field">
                   <label for="nascimento">Data de nascimento *</label>
-                  <input id="nascimento" name="nascimento" type="date" autocomplete="bday" aria-describedby="erro-nascimento">
+                  <input id="nascimento" name="nascimento" type="date" min="1900-01-01" autocomplete="bday" aria-describedby="erro-nascimento">
                   <small class="msg-erro" id="erro-nascimento" role="alert"></small>
                 </div>
               </div>
@@ -69,7 +69,7 @@
               <p class="muted-note">Usamos seu contato apenas para avisar sobre a sua solicitação.</p>
             </fieldset>
 
-            <fieldset class="step-panel" data-titulo="Atividade" data-campos="atividade,mei" hidden>
+            <fieldset class="step-panel" data-titulo="Atividade" data-campos="atividade,mei,cnpj" hidden>
               <legend>Sua atividade</legend>
               <div class="field">
                 <label for="atividade">Tipo de atividade *</label>
@@ -91,6 +91,11 @@
                   <label><input type="radio" name="mei" value="Não"> Não</label>
                 </div>
                 <small class="msg-erro" id="erro-mei" role="alert"></small>
+              </div>
+              <div class="field" id="campoCnpj" hidden>
+                <label for="cnpj">CNPJ do MEI *</label>
+                <input id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" aria-describedby="erro-cnpj">
+                <small class="msg-erro" id="erro-cnpj" role="alert"></small>
               </div>
             </fieldset>
 
