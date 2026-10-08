@@ -8,7 +8,7 @@ const API_URL = ["localhost", "127.0.0.1"].includes(location.hostname)
 const form = document.getElementById("cadastroForm");
 const paineis = [...form.querySelectorAll(".step-panel")];
 const CHAVE_RASCUNHO = "ambulante.cadastro.rascunho";
-const SEM_RASCUNHO = ["cpf", "consentimento"]; // dados sensíveis não ficam no navegador
+const SEM_RASCUNHO = ["cpf", "consentimento", "senha", "confirmarSenha"]; // dados sensíveis não ficam no navegador
 let etapa = 0;
 
 /* ---------- Validação ---------- */
@@ -68,6 +68,8 @@ const regras = {
   nascimento: (v) => (!dataValida(v) ? "Informe uma data válida, com ano de 4 dígitos." : maiorDeIdade(v) ? "" : "É preciso ter 18 anos ou mais."),
   telefone: (v) => (digitos(v).length === 11 ? "" : "O telefone deve ter 11 dígitos, com DDD."),
   email: (v) => (!v || /^\S+@\S+\.\S+$/.test(v) ? "" : "Digite um e-mail válido, como nome@email.com."),
+  senha: (v) => (v.length >= 8 && v.length <= 72 && /[A-Za-z]/.test(v) && /\d/.test(v) ? "" : "A senha deve ter de 8 a 72 caracteres, com letras e números."),
+  confirmarSenha: (v) => (v === form.elements.senha.value ? "" : "As senhas não são iguais."),
   atividade: obrig("Escolha o tipo de atividade."),
   mei: obrig("Informe se você tem MEI."),
   cnpj: (v) => (!meiSim() || cnpjValido(v) ? "" : "Informe um CNPJ válido do MEI (14 números)."),
@@ -236,7 +238,9 @@ form.addEventListener("submit", async (e) => {
     tipo_atividade: fd.get("atividade"),
     possui_mei: meiSim(),
     cnpj_mei: meiSim() ? digitos(fd.get("cnpj")) : null,
-    local_pretendido: fd.get("local")
+    local_pretendido: fd.get("local"),
+    senha: fd.get("senha"),
+    consentimento: true // o formulário só chega aqui com a caixa marcada
   };
 
   const botao = document.getElementById("avancar");

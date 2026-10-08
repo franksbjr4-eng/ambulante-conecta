@@ -52,8 +52,8 @@
               </div>
             </fieldset>
 
-            <fieldset class="step-panel" data-titulo="Contato" data-campos="telefone,email" hidden>
-              <legend>Contato</legend>
+            <fieldset class="step-panel" data-titulo="Contato" data-campos="telefone,email,senha,confirmarSenha" hidden>
+              <legend>Contato e acesso</legend>
               <div class="grid grid-2">
                 <div class="field">
                   <label for="telefone">Telefone com DDD *</label>
@@ -66,7 +66,20 @@
                   <small class="msg-erro" id="erro-email" role="alert"></small>
                 </div>
               </div>
-              <p class="muted-note">Usamos seu contato apenas para avisar sobre a sua solicitação.</p>
+              <div class="grid grid-2">
+                <div class="field">
+                  <label for="senha">Crie uma senha *</label>
+                  <input id="senha" name="senha" type="password" autocomplete="new-password" maxlength="72" aria-describedby="ajuda-senha erro-senha">
+                  <small class="muted-note" id="ajuda-senha">Mínimo de 8 caracteres, com letras e números.</small>
+                  <small class="msg-erro" id="erro-senha" role="alert"></small>
+                </div>
+                <div class="field">
+                  <label for="confirmarSenha">Confirme a senha *</label>
+                  <input id="confirmarSenha" name="confirmarSenha" type="password" autocomplete="new-password" maxlength="72" aria-describedby="erro-confirmarSenha">
+                  <small class="msg-erro" id="erro-confirmarSenha" role="alert"></small>
+                </div>
+              </div>
+              <p class="muted-note">Usamos seu contato apenas para avisar sobre a sua solicitação. Para entrar no sistema, você usará o CPF e esta senha.</p>
             </fieldset>
 
             <fieldset class="step-panel" data-titulo="Atividade" data-campos="atividade,mei,cnpj" hidden>
