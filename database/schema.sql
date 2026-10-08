@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 9TpwtD1mK4Iaaj1cHPFd1TKi0WzQRUAmjL6LHoQZABeOBhUeSsHR2Gs6K4kIW5u
+\restrict 8gkn9dNTuSD12sFp8NN4KcWCabCw7KtF4qh6KTkP5W5R6AxU0k0dwHQbS8rBqDC
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
@@ -52,7 +52,8 @@ CREATE TABLE public.ambulantes (
     possui_mei boolean DEFAULT false,
     cnpj_mei character varying(20),
     criado_em timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    local_pretendido character varying(255)
+    local_pretendido character varying(255),
+    consentimento_em timestamp without time zone
 );
 
 
@@ -283,6 +284,43 @@ ALTER SEQUENCE public.mensagem_id_mensagem_seq OWNED BY public.mensagem.id_mensa
 
 
 --
+-- Name: mensagens; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.mensagens (
+    id integer NOT NULL,
+    ambulante_id integer NOT NULL,
+    remetente character varying(20) NOT NULL,
+    usuario_id integer,
+    assunto character varying(120) NOT NULL,
+    texto text NOT NULL,
+    lida boolean DEFAULT false NOT NULL,
+    criado_em timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT mensagens_remetente_check CHECK (((remetente)::text = ANY ((ARRAY['ambulante'::character varying, 'gestor'::character varying, 'sistema'::character varying])::text[])))
+);
+
+
+--
+-- Name: mensagens_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.mensagens_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: mensagens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.mensagens_id_seq OWNED BY public.mensagens.id;
+
+
+--
 -- Name: pontos_venda; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -390,6 +428,42 @@ ALTER SEQUENCE public.usuario_id_usuario_seq OWNED BY public.usuario.id_usuario;
 
 
 --
+-- Name: usuarios; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.usuarios (
+    id integer NOT NULL,
+    cpf character varying(14) NOT NULL,
+    senha_hash character varying(100) NOT NULL,
+    perfil character varying(20) NOT NULL,
+    ambulante_id integer,
+    criado_em timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT usuarios_perfil_check CHECK (((perfil)::text = ANY ((ARRAY['ambulante'::character varying, 'gestor'::character varying])::text[]))),
+    CONSTRAINT usuarios_perfil_vinculo_chk CHECK (((((perfil)::text = 'ambulante'::text) AND (ambulante_id IS NOT NULL)) OR (((perfil)::text = 'gestor'::text) AND (ambulante_id IS NULL))))
+);
+
+
+--
+-- Name: usuarios_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.usuarios_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: usuarios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.usuarios_id_seq OWNED BY public.usuarios.id;
+
+
+--
 -- Name: ambulantes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -439,6 +513,13 @@ ALTER TABLE ONLY public.mensagem ALTER COLUMN id_mensagem SET DEFAULT nextval('p
 
 
 --
+-- Name: mensagens id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mensagens ALTER COLUMN id SET DEFAULT nextval('public.mensagens_id_seq'::regclass);
+
+
+--
 -- Name: pontos_venda id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -457,6 +538,13 @@ ALTER TABLE ONLY public.solicitacao ALTER COLUMN id_solicitacao SET DEFAULT next
 --
 
 ALTER TABLE ONLY public.usuario ALTER COLUMN id_usuario SET DEFAULT nextval('public.usuario_id_usuario_seq'::regclass);
+
+
+--
+-- Name: usuarios id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usuarios ALTER COLUMN id SET DEFAULT nextval('public.usuarios_id_seq'::regclass);
 
 
 --
@@ -540,6 +628,14 @@ ALTER TABLE ONLY public.mensagem
 
 
 --
+-- Name: mensagens mensagens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mensagens
+    ADD CONSTRAINT mensagens_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: pontos_venda pontos_venda_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -572,10 +668,34 @@ ALTER TABLE ONLY public.usuario
 
 
 --
--- Name: ux_ambulantes_cpf; Type: INDEX; Schema: public; Owner: -
+-- Name: usuarios usuarios_ambulante_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX ux_ambulantes_cpf ON public.ambulantes USING btree (cpf);
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_ambulante_id_key UNIQUE (ambulante_id);
+
+
+--
+-- Name: usuarios usuarios_cpf_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_cpf_key UNIQUE (cpf);
+
+
+--
+-- Name: usuarios usuarios_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idx_mensagens_ambulante; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_mensagens_ambulante ON public.mensagens USING btree (ambulante_id, criado_em DESC);
 
 
 --
@@ -619,6 +739,22 @@ ALTER TABLE ONLY public.mensagem
 
 
 --
+-- Name: mensagens mensagens_ambulante_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mensagens
+    ADD CONSTRAINT mensagens_ambulante_id_fkey FOREIGN KEY (ambulante_id) REFERENCES public.ambulantes(id) ON DELETE CASCADE;
+
+
+--
+-- Name: mensagens mensagens_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mensagens
+    ADD CONSTRAINT mensagens_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE SET NULL;
+
+
+--
 -- Name: pontos_venda pontos_venda_ambulante_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -627,8 +763,16 @@ ALTER TABLE ONLY public.pontos_venda
 
 
 --
+-- Name: usuarios usuarios_ambulante_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_ambulante_id_fkey FOREIGN KEY (ambulante_id) REFERENCES public.ambulantes(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 9TpwtD1mK4Iaaj1cHPFd1TKi0WzQRUAmjL6LHoQZABeOBhUeSsHR2Gs6K4kIW5u
+\unrestrict 8gkn9dNTuSD12sFp8NN4KcWCabCw7KtF4qh6KTkP5W5R6AxU0k0dwHQbS8rBqDC
 
