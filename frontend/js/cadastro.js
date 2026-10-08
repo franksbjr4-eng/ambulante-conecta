@@ -112,18 +112,6 @@ function montarRevisao() {
 
 document.getElementById("voltar").addEventListener("click", () => mostrarEtapa(etapa - 1));
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (!validaEtapa(etapa)) return;
-  if (etapa < paineis.length - 1) return mostrarEtapa(etapa + 1);
-
-  // Última etapa: confere tudo antes de enviar
-  for (let i = 0; i < paineis.length; i++) {
-    if (!validaEtapa(i)) { mostrarEtapa(i); validaEtapa(i); return; }
-  }
-  enviar();
-});
-
 // Validação ao sair do campo
 form.addEventListener("focusout", (e) => {
   const c = e.target.name;
@@ -140,7 +128,7 @@ function salvarRascunho() {
       d[el.name] = el.value;
     });
     localStorage.setItem(CHAVE_RASCUNHO, JSON.stringify(d));
-  } catch (_) { /* navegador sem armazenamento: segue sem rascunho */ }
+  } catch (_) {}
 }
 
 function carregarRascunho() {
@@ -157,66 +145,56 @@ function carregarRascunho() {
 form.addEventListener("input", salvarRascunho);
 form.addEventListener("change", salvarRascunho);
 
-/* ---------- Envio ---------- */
-function enviar() {
-  const dados = Object.fromEntries(new FormData(form).entries());
-  // TODO: trocar por fetch("/api/cadastro", { method: "POST", body: JSON.stringify(dados) })
-  const est = lerEstado();
-  est.cadastro = true;
-  est.perfil = { atividade: dados.atividade, local: dados.local, turno: dados.turno }; // sem CPF
-  addMensagem(est, { de: "Ambulante Conecta", assunto: "Cadastro recebido",
-    texto: "Recebemos seus dados. Agora você pode solicitar um ponto de venda na página Solicitação." });
-  salvarEstado(est);
-  renderMenu();
-  try { localStorage.removeItem(CHAVE_RASCUNHO); } catch (_) {}
-  document.getElementById("cadastroCard").hidden = true;
-  const ok = document.getElementById("sucesso");
-  ok.hidden = false;
-  ok.focus();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
+/* ---------- Envio Real para o Backend ---------- */
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!validaEtapa(etapa)) return;
+  if (etapa < paineis.length - 1) return mostrarEtapa(etapa + 1);
+
+  for (let i = 0; i < paineis.length; i++) {
+    if (!validaEtapa(i)) { mostrarEtapa(i); validaEtapa(i); return; }
+  }
+
+  // Prepara os dados exatamente nos nomes esperados pelo backend (removendo máscaras do CPF e Telefone)
+  const formData = new FormData(form);
+  const meiValor = formData.get("mei");
+  const possuiMeiBool = meiValor === "Sim" || meiValor === "true" || meiValor === "1";
+
+  const dadosCadastro = {
+    nome: formData.get("nome"),
+    cpf: formData.get("cpf") ? formData.get("cpf").replace(/\D/g, "") : "",
+    nascimento: formData.get("nascimento"),
+    telefone: formData.get("telefone") ? formData.get("telefone").replace(/\D/g, "") : "",
+    email: formData.get("email") || null,
+    atividade: formData.get("atividade"),
+    possui_mei: possuiMeiBool,
+    local_pretendido: formData.get("local")
+  };
+
+  try {
+    const resposta = await fetch('http://localhost:3000/api/ambulantes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dadosCadastro)
+    });
+
+    const resultado = await resposta.json();
+
+    if (resposta.ok) {
+      try { localStorage.removeItem(CHAVE_RASCUNHO); } catch (_) {}
+      document.getElementById('cadastroCard').hidden = true;
+      const ok = document.getElementById('sucesso');
+      ok.hidden = false;
+      ok.focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      alert('Erro ao cadastrar: ' + (resultado.erro || JSON.stringify(resultado.campos)));
+    }
+  } catch (erro) {
+    console.error('Erro ao conectar com o servidor:', erro);
+    alert('Servidor off-line. Certifique-se de que o Node.js está rodando na porta 3000.');
+  }
+});
 
 carregarRascunho();
 mostrarEtapa(0, false);
-const cadastroForm = document.getElementById('cadastroForm');
-
-cadastroForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Captura os dados diretamente pelos IDs do seu HTML
-    const opcaoMei = document.querySelector('input[name="mei"]:checked');
-
-    const dadosCadastro = {
-        nome: document.getElementById('nome').value,
-        cpf: document.getElementById('cpf').value,
-        nascimento: document.getElementById('nascimento').value,
-        telefone: document.getElementById('telefone').value,
-        email: document.getElementById('email').value,
-        atividade: document.getElementById('atividade').value,
-        produtos: document.getElementById('produtos').value,
-        mei: opcaoMei ? opcaoMei.value : 'Não',
-        local: document.getElementById('local').value,
-        turno: document.getElementById('turno').value
-    };
-
-    try {
-        const resposta = await fetch('http://localhost:3000/api/cadastrar-ambulante', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dadosCadastro)
-        });
-
-        const resultado = await resposta.json();
-
-        if (resposta.ok) {
-            // Esconde o formulário e exibe o card de sucesso que já existe no seu HTML
-            document.getElementById('cadastroCard').hidden = true;
-            document.getElementById('sucesso').hidden = false;
-        } else {
-            alert('Erro: ' + resultado.erro);
-        }
-    } catch (erro) {
-        console.error('Erro ao conectar com o servidor:', erro);
-        alert('Servidor off-line. Certifique-se de que o Node.js (node server.js) está rodando.');
-    }
-});
