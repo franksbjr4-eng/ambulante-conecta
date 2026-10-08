@@ -20,11 +20,12 @@ app.use(express.json({ limit: '100kb' })); // transforma o corpo JSON em req.bod
 
 // 3. Rotas
 const { getSolicitacoesComDetalhes } = require('./src/controllers/solicitacaoController');
+const { autenticar, exigirPerfil } = require('./src/middlewares/auth');
 
 app.get('/', (req, res) => {
   res.json({ mensagem: 'API do Ambulante Conecta rodando com sucesso!' });
 });
-app.get('/api/solicitacoes', getSolicitacoesComDetalhes);
+app.get('/api/solicitacoes', autenticar, exigirPerfil('gestor'), getSolicitacoesComDetalhes);
 app.use('/api', require('./src/routes')(pool)); // cadastro, pontos e criação de solicitações
 
 // 4. Rota inexistente e tratamento de erros (sempre respondem em JSON)
