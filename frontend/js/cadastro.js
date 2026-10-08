@@ -1,4 +1,9 @@
-/* Ambulante Conecta — cadastro em etapas */
+/* Ambulante Conecta — cadastro em etapas, ligado à API */
+
+// Em desenvolvimento usa a API local. Ao publicar o back-end, troque a segunda URL.
+const API_URL = ["localhost", "127.0.0.1"].includes(location.hostname)
+  ? "http://localhost:3000/api"
+  : "https://SEU-BACKEND-PUBLICADO/api";
 
 const form = document.getElementById("cadastroForm");
 const paineis = [...form.querySelectorAll(".step-panel")];
@@ -7,8 +12,10 @@ const SEM_RASCUNHO = ["cpf", "consentimento"]; // dados sensíveis não ficam no
 let etapa = 0;
 
 /* ---------- Validação ---------- */
+const digitos = (v) => String(v ?? "").replace(/\D/g, "");
+
 function cpfValido(v) {
-  const n = v.replace(/\D/g, "");
+  const n = digitos(v);
   if (n.length !== 11 || /^(\d)\1+$/.test(n)) return false;
   const dv = (t) => {
     let soma = 0;
@@ -19,43 +26,77 @@ function cpfValido(v) {
   return dv(9) === +n[9] && dv(10) === +n[10];
 }
 
-function maiorDeIdade(data) {
-  const d = new Date(data), hoje = new Date();
-  if (isNaN(d)) return false;
-  const limite = new Date(hoje.getFullYear() - 18, hoje.getMonth(), hoje.getDate());
-  return d <= limite && d.getFullYear() > 1900;
+function cnpjValido(v) {
+  const n = digitos(v);
+  if (n.length !== 14 || /^(\d)\1+$/.test(n)) return false;
+  const dv = (t) => {
+    const pesos = t === 12 ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2] : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    let soma = 0;
+    for (let i = 0; i < t; i++) soma += +n[i] * pesos[i];
+    const r = soma % 11;
+    return r < 2 ? 0 : 11 - r;
+  };
+  return dv(12) === +n[12] && dv(13) === +n[13];
 }
 
+// Data no formato AAAA-MM-DD com ano de exatamente 4 dígitos (barra anos como 11111) e que exista no calendário
+function dataValida(iso) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return false;
+  const [a, m, d] = iso.split("-").map(Number);
+  const dt = new Date(Date.UTC(a, m - 1, d));
+  return a >= 1900 && dt.getUTCFullYear() === a && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
+
+const isoLocal = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const hoje = new Date();
+const LIMITE_NASC = isoLocal(new Date(hoje.getFullYear() - 18, hoje.getMonth(), hoje.getDate()));
+const maiorDeIdade = (iso) => iso <= LIMITE_NASC; // datas AAAA-MM-DD comparam bem como texto
+
+// O próprio campo de data também passa a limitar o ano
+form.elements.nascimento.min = "1900-01-01";
+form.elements.nascimento.max = LIMITE_NASC;
+// Ano com mais de 4 dígitos (ex.: 11111): o erro aparece na hora, sem esperar sair do campo
+form.elements.nascimento.addEventListener("input", (e) => {
+  if (/^\d{5,}-/.test(e.target.value)) valida("nascimento");
+});
+
+const meiSim = () => form.elements.mei.value === "Sim";
 const obrig = (msg) => (v) => (v.trim() ? "" : msg);
 const regras = {
   nome: (v) => (v.trim().split(/\s+/).length >= 2 ? "" : "Digite seu nome e sobrenome."),
   cpf: (v) => (cpfValido(v) ? "" : "CPF inválido. Verifique os 11 números."),
-  nascimento: (v) => (maiorDeIdade(v) ? "" : "Informe uma data válida. É preciso ter 18 anos ou mais."),
-  telefone: (v) => (v.replace(/\D/g, "").length === 11 ? "" : "O telefone deve ter 11 dígitos, com DDD."),
+  nascimento: (v) => (!dataValida(v) ? "Informe uma data válida, com ano de 4 dígitos." : maiorDeIdade(v) ? "" : "É preciso ter 18 anos ou mais."),
+  telefone: (v) => (digitos(v).length === 11 ? "" : "O telefone deve ter 11 dígitos, com DDD."),
   email: (v) => (!v || /^\S+@\S+\.\S+$/.test(v) ? "" : "Digite um e-mail válido, como nome@email.com."),
   atividade: obrig("Escolha o tipo de atividade."),
   mei: obrig("Informe se você tem MEI."),
+  cnpj: (v) => (!meiSim() || cnpjValido(v) ? "" : "Informe um CNPJ válido do MEI (14 números)."),
   local: obrig("Informe o bairro ou região."),
   turno: obrig("Escolha o turno de trabalho."),
   consentimento: (_, el) => (el.checked ? "" : "Marque a caixa para enviar o cadastro.")
 };
 
-function valida(campo) {
+function marcaErro(campo, msg) {
+  const caixa = document.getElementById("erro-" + campo);
   const el = form.elements[campo];
-  const valor = el.value ?? "";
-  const msg = regras[campo](valor, el);
-  document.getElementById("erro-" + campo).textContent = msg;
+  if (!caixa || !el) return;
+  caixa.textContent = msg;
   const alvo = el.length ? el[0] : el; // radios
   alvo.setAttribute("aria-invalid", msg ? "true" : "false");
   if (el.length) [...el].forEach((r) => r.closest("label")?.classList.toggle("invalido", !!msg));
   else el.classList.toggle("invalido", !!msg);
+}
+
+function valida(campo) {
+  const el = form.elements[campo];
+  const msg = regras[campo](el.value ?? "", el);
+  marcaErro(campo, msg);
   return !msg;
 }
 
 function validaEtapa(i) {
   const campos = paineis[i].dataset.campos.split(",");
-  const resultados = campos.map((c) => [c, valida(c)]);
-  const primeiro = resultados.find(([, ok]) => !ok);
+  const primeiro = campos.map((c) => [c, valida(c)]).find(([, ok]) => !ok);
   if (primeiro) {
     const el = form.elements[primeiro[0]];
     (el.length ? el[0] : el).focus();
@@ -66,12 +107,23 @@ function validaEtapa(i) {
 
 /* ---------- Máscaras ---------- */
 function mascara(el, fn) {
-  el.addEventListener("input", () => (el.value = fn(el.value.replace(/\D/g, ""))));
+  el.addEventListener("input", () => (el.value = fn(digitos(el.value))));
 }
 mascara(form.elements.cpf, (n) =>
   n.slice(0, 11).replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})$/, "$1-$2"));
 mascara(form.elements.telefone, (n) =>
   n.slice(0, 11).replace(/^(\d{2})(\d)/, "($1) $2").replace(/(\d{5})(\d{1,4})$/, "$1-$2"));
+mascara(form.elements.cnpj, (n) =>
+  n.slice(0, 14).replace(/^(\d{2})(\d)/, "$1.$2").replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+    .replace(/\.(\d{3})(\d)/, ".$1/$2").replace(/(\d{4})(\d)/, "$1-$2"));
+
+// O campo de CNPJ só aparece para quem tem MEI
+function atualizaCnpj() {
+  const mostrar = meiSim();
+  document.getElementById("campoCnpj").hidden = !mostrar;
+  if (!mostrar) { form.elements.cnpj.value = ""; marcaErro("cnpj", ""); }
+}
+form.addEventListener("change", (e) => { if (e.target.name === "mei") atualizaCnpj(); });
 
 /* ---------- Etapas ---------- */
 function renderProgresso() {
@@ -99,8 +151,9 @@ function mostrarEtapa(i, focar = true) {
 function montarRevisao() {
   const rotulos = [
     ["nome", "Nome"], ["cpf", "CPF"], ["nascimento", "Nascimento"], ["telefone", "Telefone"], ["email", "E-mail"],
-    ["atividade", "Atividade"], ["produtos", "Produtos ou serviços"], ["mei", "MEI"], ["local", "Local pretendido"], ["turno", "Turno"]
-  ];
+    ["atividade", "Atividade"], ["produtos", "Produtos ou serviços"], ["mei", "MEI"], ["cnpj", "CNPJ do MEI"],
+    ["local", "Local pretendido"], ["turno", "Turno"]
+  ].filter(([c]) => c !== "cnpj" || meiSim());
   const fmtData = (v) => v.split("-").reverse().join("/");
   document.getElementById("revisao").innerHTML = rotulos.map(([c, r]) => {
     let v = form.elements[c].value || "Não informado";
@@ -145,7 +198,25 @@ function carregarRascunho() {
 form.addEventListener("input", salvarRascunho);
 form.addEventListener("change", salvarRascunho);
 
-/* ---------- Envio Real para o Backend ---------- */
+/* ---------- Envio para a API ---------- */
+// Nomes dos campos na API -> nomes dos campos do formulário
+const CAMPO_FORM = { nome_completo: "nome", data_nascimento: "nascimento", tipo_atividade: "atividade", possui_mei: "mei", cnpj_mei: "cnpj" };
+
+// Mostra os erros devolvidos pela API nos campos certos e leva o usuário até o primeiro
+function mostrarErrosDaApi(erros) {
+  const lista = Object.entries(erros).map(([k, msg]) => [CAMPO_FORM[k] || k, msg]);
+  lista.forEach(([campo, msg]) => marcaErro(campo, msg));
+  const primeiro = lista.find(([campo]) => form.elements[campo]);
+  if (!primeiro) return false;
+  const i = paineis.findIndex((p) => p.dataset.campos.split(",").includes(primeiro[0]));
+  if (i >= 0) {
+    mostrarEtapa(i, false);
+    const el = form.elements[primeiro[0]];
+    (el.length ? el[0] : el).focus();
+  }
+  return true;
+}
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!validaEtapa(etapa)) return;
@@ -155,46 +226,53 @@ form.addEventListener("submit", async (e) => {
     if (!validaEtapa(i)) { mostrarEtapa(i); validaEtapa(i); return; }
   }
 
-  // Prepara os dados exatamente nos nomes esperados pelo backend (removendo máscaras do CPF e Telefone)
-  const formData = new FormData(form);
-  const meiValor = formData.get("mei");
-  const possuiMeiBool = meiValor === "Sim" || meiValor === "true" || meiValor === "1";
-
-  const dadosCadastro = {
-    nome: formData.get("nome"),
-    cpf: formData.get("cpf") ? formData.get("cpf").replace(/\D/g, "") : "",
-    nascimento: formData.get("nascimento"),
-    telefone: formData.get("telefone") ? formData.get("telefone").replace(/\D/g, "") : "",
-    email: formData.get("email") || null,
-    atividade: formData.get("atividade"),
-    possui_mei: possuiMeiBool,
-    local_pretendido: formData.get("local")
+  const fd = new FormData(form);
+  const dados = {
+    nome_completo: fd.get("nome").trim(),
+    cpf: digitos(fd.get("cpf")),
+    data_nascimento: fd.get("nascimento"),
+    telefone: digitos(fd.get("telefone")),
+    email: (fd.get("email") || "").trim() || null,
+    tipo_atividade: fd.get("atividade"),
+    possui_mei: meiSim(),
+    cnpj_mei: meiSim() ? digitos(fd.get("cnpj")) : null,
+    local_pretendido: fd.get("local")
   };
 
+  const botao = document.getElementById("avancar");
+  botao.disabled = true;
+  botao.textContent = "Enviando...";
   try {
-    const resposta = await fetch('http://localhost:3000/api/ambulantes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dadosCadastro)
+    const resposta = await fetch(`${API_URL}/ambulantes`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados)
     });
-
-    const resultado = await resposta.json();
+    const corpo = await resposta.json().catch(() => ({}));
 
     if (resposta.ok) {
       try { localStorage.removeItem(CHAVE_RASCUNHO); } catch (_) {}
-      document.getElementById('cadastroCard').hidden = true;
-      const ok = document.getElementById('sucesso');
+      document.getElementById("cadastroCard").hidden = true;
+      const ok = document.getElementById("sucesso");
       ok.hidden = false;
       ok.focus();
       window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (resposta.status === 409) {
+      mostrarErrosDaApi({ cpf: "Este CPF já está cadastrado." });
+    } else if (resposta.status === 400 && corpo.campos && mostrarErrosDaApi(corpo.campos)) {
+      // erros já exibidos nos campos
     } else {
-      alert('Erro ao cadastrar: ' + (resultado.erro || JSON.stringify(resultado.campos)));
+      mostrarAviso(corpo.erro || "Não foi possível concluir o cadastro. Tente novamente.");
     }
   } catch (erro) {
-    console.error('Erro ao conectar com o servidor:', erro);
-    alert('Servidor off-line. Certifique-se de que o Node.js está rodando na porta 3000.');
+    console.error("Erro de conexão com a API:", erro);
+    mostrarAviso("Não foi possível conectar ao servidor. Verifique se a API está rodando.");
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "Enviar cadastro";
   }
 });
 
 carregarRascunho();
+atualizaCnpj();
 mostrarEtapa(0, false);
