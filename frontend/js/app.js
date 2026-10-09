@@ -1,5 +1,6 @@
-/* Ambulante Conecta — código compartilhado (menu, estado e resumo da tela inicial)
-   O estado fica no navegador (localStorage) até existir um back-end. Troque lerEstado/salvarEstado por chamadas à API. */
+/* Ambulante Conecta — código compartilhado: sessão, menu, topo e resumo da página inicial.
+   Depende de js/api.js (carregue-o antes). O estado local (localStorage) ficou só para a Formalização,
+   que ainda não tem API; cadastro, login, solicitações e mensagens usam a API. */
 
 const CHAVE_ESTADO = "ambulante.estado";
 
@@ -33,57 +34,146 @@ const menu = [
   { id: "situacao",     href: "situacao.html",     icone: "◷", texto: "Solicitação" },
   { id: "comunicacao",  href: "comunicacao.html",  icone: "✉", texto: "Comunicação", badge: true }
 ];
-const menuMovel = { index: "Início", mapa: "Mapa", formalizacao: "Formalização", comunicacao: "Mensagens", cadastro: "Perfil" };
+const rotulosMovel = { index: "Início", mapa: "Mapa", formalizacao: "Formalização", comunicacao: "Mensagens" };
 
 const paginaAtual = (location.pathname.split("/").pop() || "index.html").replace(".html", "") || "index";
+let totalNaoLidas = 0; // vem da API quando há usuário logado
+
+const escHtml = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* ---------- Sessão e acesso às páginas ---------- */
+// Para exigir login numa página: <body data-exige-login="ambulante"> (ou "gestor", ou "qualquer").
+// É só conveniência da tela: quem protege os dados de verdade é a API.
+function protegerPagina() {
+  const exigido = document.body.dataset.exigeLogin;
+  if (!exigido) return true;
+  const usuario = Sessao.usuario();
+  if (!usuario || !Sessao.token()) {
+    location.replace("login.html?voltar=" + encodeURIComponent(paginaAtual + ".html"));
+    return false;
+  }
+  if (exigido !== "qualquer" && usuario.perfil !== exigido) {
+    location.replace("index.html");
+    return false;
+  }
+  return true;
+}
+
+// Logout: apaga a sessão e os dados pessoais guardados no navegador
+function sairDaConta() {
+  Sessao.limpar();
+  try { localStorage.removeItem(CHAVE_ESTADO); localStorage.removeItem("ambulante.cadastro.rascunho"); } catch (_) {}
+  location.href = "index.html";
+}
+
+async function atualizarNaoLidas() {
+  if (!Sessao.token()) return;
+  try { totalNaoLidas = (await chamarApi("/mensagens/nao-lidas")).total; renderMenu(); } catch (_) {}
+}
+
+/* ---------- Topo e menus ---------- */
+function renderTopo() {
+  const topo = document.querySelector(".topbar");
+  if (!topo) return;
+  topo.querySelector(".topbar-user")?.remove();
+  const usuario = Sessao.usuario();
+  const caixa = document.createElement("div");
+  caixa.className = "topbar-user";
+  caixa.innerHTML = usuario
+    ? `<span class="topbar-nome">${escHtml(usuario.nome)}</span><button type="button" class="btn btn-ghost btn-sm" id="btnSair">Sair</button>`
+    : `<a class="btn btn-primary btn-sm" href="login.html">Entrar</a>`;
+  topo.appendChild(caixa);
+  document.getElementById("btnSair")?.addEventListener("click", sairDaConta);
+}
 
 function renderMenu() {
-  const novas = naoLidas(lerEstado());
-  const atual = (m) => (m.id === paginaAtual ? ' aria-current="page"' : "");
-  document.getElementById("nav").innerHTML = menu.map((m) => {
-    const badge = m.badge && novas ? `<span class="badge" aria-label="${novas} mensagens novas">${novas}</span>` : "";
-    return `<a href="${m.href}"${atual(m)}><span class="nav-ico" aria-hidden="true">${m.icone}</span>${m.texto}${badge}</a>`;
-  }).join("");
-  document.getElementById("mobileNav").innerHTML = Object.keys(menuMovel).map((id) => {
-    const m = menu.find((x) => x.id === id);
-    return `<a href="${m.href}"${atual(m)}><span aria-hidden="true">${m.icone}</span>${menuMovel[id]}</a>`;
-  }).join("");
+  const nav = document.getElementById("nav");
+  const movel = document.getElementById("mobileNav");
+  const atual = (id) => (id === paginaAtual ? ' aria-current="page"' : "");
+
+  if (nav) {
+    nav.innerHTML = menu.map((m) => {
+      const badge = m.badge && totalNaoLidas ? `<span class="badge" aria-label="${totalNaoLidas} mensagens novas">${totalNaoLidas}</span>` : "";
+      return `<a href="${m.href}"${atual(m.id)}><span class="nav-ico" aria-hidden="true">${m.icone}</span>${m.texto}${badge}</a>`;
+    }).join("");
+  }
+  if (movel) {
+    const itens = Object.keys(rotulosMovel).map((id) => {
+      const m = menu.find((x) => x.id === id);
+      return { id, href: m.href, icone: m.icone, rotulo: rotulosMovel[id] };
+    });
+    // Último item: quem não entrou vê "Entrar"; quem entrou vê "Solicitação"
+    itens.push(Sessao.usuario()
+      ? { id: "situacao", href: "situacao.html", icone: "◷", rotulo: "Solicitação" }
+      : { id: "login", href: "login.html", icone: "⇥", rotulo: "Entrar" });
+    movel.innerHTML = itens.map((i) => `<a href="${i.href}"${atual(i.id)}><span aria-hidden="true">${i.icone}</span>${i.rotulo}</a>`).join("");
+  }
 }
 
-function resumo(e) {
-  const etapas = Object.values(e.formalizacao).filter(Boolean).length;
-  const novas = naoLidas(e);
-  return [
-    e.cadastro
-      ? { rotulo: "Cadastro", valor: "Concluído", status: "Tudo certo", cor: "green", icone: "✓", href: "cadastro.html" }
-      : { rotulo: "Cadastro", valor: "Não iniciado", status: "Comece por aqui", cor: "blue", icone: "☷", href: "cadastro.html" },
-    { rotulo: "Formalização", valor: etapas ? `${etapas} de 2` : "Não iniciada",
-      status: etapas === 2 ? "Concluída" : etapas ? "Em andamento" : "Veja os passos",
-      cor: etapas === 2 ? "green" : etapas ? "blue" : "gray", icone: "↗", href: "formalizacao.html" },
-    { rotulo: "Solicitação", valor: e.solicitacao ? "Enviada" : "Nenhuma",
-      status: e.solicitacao ? "Aguardando análise" : "Faça seu pedido",
-      cor: e.solicitacao ? "orange" : "gray", icone: "◷", href: "situacao.html" },
-    { rotulo: "Mensagens", valor: novas ? `${novas} ${novas > 1 ? "novas" : "nova"}` : "Nenhuma nova",
-      status: novas ? "Leia agora" : "Tudo em dia", cor: novas ? "red" : "gray", icone: "✉", href: "comunicacao.html" }
-  ];
-}
+/* ---------- Resumo da página inicial ---------- */
+async function renderResumo() {
+  const lista = document.getElementById("stats");
+  if (!lista) return;
+  const usuario = Sessao.usuario();
+  const etapas = Object.values(lerEstado().formalizacao).filter(Boolean).length;
+  const formalizacao = { rotulo: "Formalização", valor: etapas ? `${etapas} de 2` : "Não iniciada",
+    status: etapas === 2 ? "Concluída" : etapas ? "Em andamento" : "Veja os passos",
+    cor: etapas === 2 ? "green" : etapas ? "blue" : "gray", icone: "↗", href: "formalizacao.html" };
 
-function renderResumo() {
-  document.getElementById("stats").innerHTML = resumo(lerEstado()).map((s) => `
-    <li><a class="card stat-link" href="${s.href}">
-      <span class="stat-top"><span>${s.rotulo}</span><span class="icon-circle ${s.cor}" aria-hidden="true">${s.icone}</span></span>
-      <span class="stat-number">${s.valor}</span>
-      <span class="status ${s.cor}">${s.status}</span>
-    </a></li>`).join("");
+  let cards;
+  if (!usuario) {
+    cards = [
+      { rotulo: "Cadastro", valor: "Não iniciado", status: "Comece por aqui", cor: "blue", icone: "☷", href: "cadastro.html" },
+      formalizacao,
+      { rotulo: "Solicitação", valor: "Entre para ver", status: "Faça login", cor: "gray", icone: "◷", href: "login.html?voltar=situacao.html" },
+      { rotulo: "Mensagens", valor: "Entre para ver", status: "Faça login", cor: "gray", icone: "✉", href: "login.html?voltar=comunicacao.html" }
+    ];
+  } else if (usuario.perfil === "gestor") {
+    let p = null;
+    try { p = await chamarApi("/painel"); } catch (_) {}
+    const n = (valor) => (p ? valor : "—");
+    cards = [
+      { rotulo: "Solicitações pendentes", valor: n(p?.solicitacoes.pendentes), status: "Aguardando decisão", cor: p?.solicitacoes.pendentes ? "orange" : "gray", icone: "◷" },
+      { rotulo: "Pontos disponíveis", valor: n(p?.pontos.disponiveis), status: "Para novas solicitações", cor: "green", icone: "⌖", href: "mapa.html" },
+      { rotulo: "Ambulantes", valor: n(p?.ambulantes.total), status: p ? `${p.ambulantes.com_mei} com MEI` : "", cor: "blue", icone: "☷" },
+      { rotulo: "Mensagens", valor: n(p?.mensagens_nao_lidas), status: "Não lidas", cor: p?.mensagens_nao_lidas ? "red" : "gray", icone: "✉" }
+    ];
+  } else {
+    let minhas = [];
+    try { minhas = await chamarApi("/solicitacoes/minhas"); } catch (_) {}
+    const ultima = minhas[0];
+    const corStatus = { Pendente: "orange", Aprovada: "green", Recusada: "red" };
+    cards = [
+      { rotulo: "Cadastro", valor: "Concluído", status: "Tudo certo", cor: "green", icone: "✓" },
+      formalizacao,
+      { rotulo: "Solicitação", valor: ultima ? ultima.status : "Nenhuma", status: ultima ? "Última solicitação" : "Faça seu pedido",
+        cor: ultima ? corStatus[ultima.status] || "blue" : "gray", icone: "◷", href: "situacao.html" },
+      { rotulo: "Mensagens", valor: totalNaoLidas ? `${totalNaoLidas} ${totalNaoLidas > 1 ? "novas" : "nova"}` : "Nenhuma nova",
+        status: totalNaoLidas ? "Leia agora" : "Tudo em dia", cor: totalNaoLidas ? "red" : "gray", icone: "✉", href: "comunicacao.html" }
+    ];
+  }
+
+  lista.innerHTML = cards.map((s) => {
+    const miolo = `<span class="stat-top"><span>${s.rotulo}</span><span class="icon-circle ${s.cor}" aria-hidden="true">${s.icone}</span></span>
+      <span class="stat-number">${escHtml(s.valor)}</span><span class="status ${s.cor}">${escHtml(s.status)}</span>`;
+    return `<li>${s.href ? `<a class="card stat-link" href="${s.href}">${miolo}</a>` : `<div class="card stat-link">${miolo}</div>`}</li>`;
+  }).join("");
+
+  // Quem já entrou não precisa do botão "Cadastrar dados"
+  if (usuario) document.querySelector('.hero-actions a[href="cadastro.html"]')?.setAttribute("hidden", "");
 }
 
 function mostrarAviso(msg) {
   const t = document.getElementById("toast");
+  if (!t) return;
   t.textContent = msg;
   t.style.display = "block";
   clearTimeout(mostrarAviso.timer);
   mostrarAviso.timer = setTimeout(() => (t.style.display = "none"), 2800);
 }
 
-renderMenu();
-if (document.getElementById("stats")) renderResumo();
+if (protegerPagina()) {
+  renderTopo();
+  renderMenu();
+  atualizarNaoLidas().then(renderResumo);
+}
