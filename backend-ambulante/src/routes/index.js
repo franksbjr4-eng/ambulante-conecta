@@ -7,5 +7,6 @@ module.exports = (pool) => {
   router.use(require("./pontos")(pool));
   router.use(require("./solicitacoes")(pool));
   router.use(require("./avaliacoes")(pool));
+  router.use(require("./mensagens")(pool));
   return router;
 };
