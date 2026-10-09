@@ -304,11 +304,10 @@ definitivo/
 Clone o repositório:
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
+git clone <https://franksbjr4-eng.github.io/ambulante-conecta/>
 cd definitivo
 ```
 
-Substitua `<URL_DO_REPOSITORIO>` pelo endereço real do repositório no GitHub.
 
 ### 3. Configurar o back-end
 
