@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 8gkn9dNTuSD12sFp8NN4KcWCabCw7KtF4qh6KTkP5W5R6AxU0k0dwHQbS8rBqDC
+\restrict bUdo0vqTSJvlIif4GjdVDUaPyAqmNNzZ1o6ejLYgLAi1dGABBaIGUtCesgLFiJH
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
@@ -27,7 +27,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
@@ -38,7 +38,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: ambulantes; Type: TABLE; Schema: public; Owner: -
+-- Name: ambulantes; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.ambulantes (
@@ -57,8 +57,10 @@ CREATE TABLE public.ambulantes (
 );
 
 
+ALTER TABLE public.ambulantes OWNER TO postgres;
+
 --
--- Name: ambulantes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: ambulantes_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.ambulantes_id_seq
@@ -70,15 +72,17 @@ CREATE SEQUENCE public.ambulantes_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.ambulantes_id_seq OWNER TO postgres;
+
 --
--- Name: ambulantes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: ambulantes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.ambulantes_id_seq OWNED BY public.ambulantes.id;
 
 
 --
--- Name: atividade; Type: TABLE; Schema: public; Owner: -
+-- Name: atividade; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.atividade (
@@ -89,8 +93,10 @@ CREATE TABLE public.atividade (
 );
 
 
+ALTER TABLE public.atividade OWNER TO postgres;
+
 --
--- Name: atividade_id_atividade_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: atividade_id_atividade_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.atividade_id_atividade_seq
@@ -102,15 +108,17 @@ CREATE SEQUENCE public.atividade_id_atividade_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.atividade_id_atividade_seq OWNER TO postgres;
+
 --
--- Name: atividade_id_atividade_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: atividade_id_atividade_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.atividade_id_atividade_seq OWNED BY public.atividade.id_atividade;
 
 
 --
--- Name: documento; Type: TABLE; Schema: public; Owner: -
+-- Name: documento; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.documento (
@@ -124,8 +132,10 @@ CREATE TABLE public.documento (
 );
 
 
+ALTER TABLE public.documento OWNER TO postgres;
+
 --
--- Name: documento_id_documento_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: documento_id_documento_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.documento_id_documento_seq
@@ -137,15 +147,17 @@ CREATE SEQUENCE public.documento_id_documento_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.documento_id_documento_seq OWNER TO postgres;
+
 --
--- Name: documento_id_documento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: documento_id_documento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.documento_id_documento_seq OWNED BY public.documento.id_documento;
 
 
 --
--- Name: etapa_formalizacao; Type: TABLE; Schema: public; Owner: -
+-- Name: etapa_formalizacao; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.etapa_formalizacao (
@@ -159,8 +171,10 @@ CREATE TABLE public.etapa_formalizacao (
 );
 
 
+ALTER TABLE public.etapa_formalizacao OWNER TO postgres;
+
 --
--- Name: etapa_formalizacao_id_etapa_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: etapa_formalizacao_id_etapa_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.etapa_formalizacao_id_etapa_seq
@@ -172,15 +186,17 @@ CREATE SEQUENCE public.etapa_formalizacao_id_etapa_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.etapa_formalizacao_id_etapa_seq OWNER TO postgres;
+
 --
--- Name: etapa_formalizacao_id_etapa_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: etapa_formalizacao_id_etapa_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.etapa_formalizacao_id_etapa_seq OWNED BY public.etapa_formalizacao.id_etapa;
 
 
 --
--- Name: formalizacao; Type: TABLE; Schema: public; Owner: -
+-- Name: formalizacao; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.formalizacao (
@@ -194,8 +210,10 @@ CREATE TABLE public.formalizacao (
 );
 
 
+ALTER TABLE public.formalizacao OWNER TO postgres;
+
 --
--- Name: formalizacao_id_formalizacao_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: formalizacao_id_formalizacao_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.formalizacao_id_formalizacao_seq
@@ -207,15 +225,17 @@ CREATE SEQUENCE public.formalizacao_id_formalizacao_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.formalizacao_id_formalizacao_seq OWNER TO postgres;
+
 --
--- Name: formalizacao_id_formalizacao_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: formalizacao_id_formalizacao_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.formalizacao_id_formalizacao_seq OWNED BY public.formalizacao.id_formalizacao;
 
 
 --
--- Name: historico_solicitacao; Type: TABLE; Schema: public; Owner: -
+-- Name: historico_solicitacao; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.historico_solicitacao (
@@ -228,8 +248,10 @@ CREATE TABLE public.historico_solicitacao (
 );
 
 
+ALTER TABLE public.historico_solicitacao OWNER TO postgres;
+
 --
--- Name: historico_solicitacao_id_historico_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: historico_solicitacao_id_historico_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.historico_solicitacao_id_historico_seq
@@ -241,15 +263,17 @@ CREATE SEQUENCE public.historico_solicitacao_id_historico_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.historico_solicitacao_id_historico_seq OWNER TO postgres;
+
 --
--- Name: historico_solicitacao_id_historico_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: historico_solicitacao_id_historico_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.historico_solicitacao_id_historico_seq OWNED BY public.historico_solicitacao.id_historico;
 
 
 --
--- Name: mensagem; Type: TABLE; Schema: public; Owner: -
+-- Name: mensagem; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.mensagem (
@@ -263,8 +287,10 @@ CREATE TABLE public.mensagem (
 );
 
 
+ALTER TABLE public.mensagem OWNER TO postgres;
+
 --
--- Name: mensagem_id_mensagem_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: mensagem_id_mensagem_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.mensagem_id_mensagem_seq
@@ -276,15 +302,17 @@ CREATE SEQUENCE public.mensagem_id_mensagem_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.mensagem_id_mensagem_seq OWNER TO postgres;
+
 --
--- Name: mensagem_id_mensagem_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: mensagem_id_mensagem_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.mensagem_id_mensagem_seq OWNED BY public.mensagem.id_mensagem;
 
 
 --
--- Name: mensagens; Type: TABLE; Schema: public; Owner: -
+-- Name: mensagens; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.mensagens (
@@ -300,8 +328,10 @@ CREATE TABLE public.mensagens (
 );
 
 
+ALTER TABLE public.mensagens OWNER TO postgres;
+
 --
--- Name: mensagens_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: mensagens_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.mensagens_id_seq
@@ -313,15 +343,17 @@ CREATE SEQUENCE public.mensagens_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.mensagens_id_seq OWNER TO postgres;
+
 --
--- Name: mensagens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: mensagens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.mensagens_id_seq OWNED BY public.mensagens.id;
 
 
 --
--- Name: pontos_venda; Type: TABLE; Schema: public; Owner: -
+-- Name: pontos_venda; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.pontos_venda (
@@ -336,8 +368,10 @@ CREATE TABLE public.pontos_venda (
 );
 
 
+ALTER TABLE public.pontos_venda OWNER TO postgres;
+
 --
--- Name: pontos_venda_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: pontos_venda_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.pontos_venda_id_seq
@@ -349,15 +383,17 @@ CREATE SEQUENCE public.pontos_venda_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.pontos_venda_id_seq OWNER TO postgres;
+
 --
--- Name: pontos_venda_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: pontos_venda_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.pontos_venda_id_seq OWNED BY public.pontos_venda.id;
 
 
 --
--- Name: solicitacao; Type: TABLE; Schema: public; Owner: -
+-- Name: solicitacao; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.solicitacao (
@@ -372,8 +408,10 @@ CREATE TABLE public.solicitacao (
 );
 
 
+ALTER TABLE public.solicitacao OWNER TO postgres;
+
 --
--- Name: solicitacao_id_solicitacao_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: solicitacao_id_solicitacao_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.solicitacao_id_solicitacao_seq
@@ -385,15 +423,17 @@ CREATE SEQUENCE public.solicitacao_id_solicitacao_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.solicitacao_id_solicitacao_seq OWNER TO postgres;
+
 --
--- Name: solicitacao_id_solicitacao_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: solicitacao_id_solicitacao_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.solicitacao_id_solicitacao_seq OWNED BY public.solicitacao.id_solicitacao;
 
 
 --
--- Name: usuario; Type: TABLE; Schema: public; Owner: -
+-- Name: usuario; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.usuario (
@@ -407,8 +447,10 @@ CREATE TABLE public.usuario (
 );
 
 
+ALTER TABLE public.usuario OWNER TO postgres;
+
 --
--- Name: usuario_id_usuario_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: usuario_id_usuario_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.usuario_id_usuario_seq
@@ -420,15 +462,17 @@ CREATE SEQUENCE public.usuario_id_usuario_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.usuario_id_usuario_seq OWNER TO postgres;
+
 --
--- Name: usuario_id_usuario_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: usuario_id_usuario_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.usuario_id_usuario_seq OWNED BY public.usuario.id_usuario;
 
 
 --
--- Name: usuarios; Type: TABLE; Schema: public; Owner: -
+-- Name: usuarios; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.usuarios (
@@ -443,8 +487,10 @@ CREATE TABLE public.usuarios (
 );
 
 
+ALTER TABLE public.usuarios OWNER TO postgres;
+
 --
--- Name: usuarios_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: usuarios_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.usuarios_id_seq
@@ -456,99 +502,101 @@ CREATE SEQUENCE public.usuarios_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.usuarios_id_seq OWNER TO postgres;
+
 --
--- Name: usuarios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: usuarios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.usuarios_id_seq OWNED BY public.usuarios.id;
 
 
 --
--- Name: ambulantes id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: ambulantes id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.ambulantes ALTER COLUMN id SET DEFAULT nextval('public.ambulantes_id_seq'::regclass);
 
 
 --
--- Name: atividade id_atividade; Type: DEFAULT; Schema: public; Owner: -
+-- Name: atividade id_atividade; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.atividade ALTER COLUMN id_atividade SET DEFAULT nextval('public.atividade_id_atividade_seq'::regclass);
 
 
 --
--- Name: documento id_documento; Type: DEFAULT; Schema: public; Owner: -
+-- Name: documento id_documento; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.documento ALTER COLUMN id_documento SET DEFAULT nextval('public.documento_id_documento_seq'::regclass);
 
 
 --
--- Name: etapa_formalizacao id_etapa; Type: DEFAULT; Schema: public; Owner: -
+-- Name: etapa_formalizacao id_etapa; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.etapa_formalizacao ALTER COLUMN id_etapa SET DEFAULT nextval('public.etapa_formalizacao_id_etapa_seq'::regclass);
 
 
 --
--- Name: formalizacao id_formalizacao; Type: DEFAULT; Schema: public; Owner: -
+-- Name: formalizacao id_formalizacao; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.formalizacao ALTER COLUMN id_formalizacao SET DEFAULT nextval('public.formalizacao_id_formalizacao_seq'::regclass);
 
 
 --
--- Name: historico_solicitacao id_historico; Type: DEFAULT; Schema: public; Owner: -
+-- Name: historico_solicitacao id_historico; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.historico_solicitacao ALTER COLUMN id_historico SET DEFAULT nextval('public.historico_solicitacao_id_historico_seq'::regclass);
 
 
 --
--- Name: mensagem id_mensagem; Type: DEFAULT; Schema: public; Owner: -
+-- Name: mensagem id_mensagem; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.mensagem ALTER COLUMN id_mensagem SET DEFAULT nextval('public.mensagem_id_mensagem_seq'::regclass);
 
 
 --
--- Name: mensagens id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: mensagens id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.mensagens ALTER COLUMN id SET DEFAULT nextval('public.mensagens_id_seq'::regclass);
 
 
 --
--- Name: pontos_venda id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: pontos_venda id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pontos_venda ALTER COLUMN id SET DEFAULT nextval('public.pontos_venda_id_seq'::regclass);
 
 
 --
--- Name: solicitacao id_solicitacao; Type: DEFAULT; Schema: public; Owner: -
+-- Name: solicitacao id_solicitacao; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.solicitacao ALTER COLUMN id_solicitacao SET DEFAULT nextval('public.solicitacao_id_solicitacao_seq'::regclass);
 
 
 --
--- Name: usuario id_usuario; Type: DEFAULT; Schema: public; Owner: -
+-- Name: usuario id_usuario; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.usuario ALTER COLUMN id_usuario SET DEFAULT nextval('public.usuario_id_usuario_seq'::regclass);
 
 
 --
--- Name: usuarios id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: usuarios id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.usuarios ALTER COLUMN id SET DEFAULT nextval('public.usuarios_id_seq'::regclass);
 
 
 --
--- Name: ambulantes ambulantes_cpf_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ambulantes ambulantes_cpf_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.ambulantes
@@ -556,7 +604,7 @@ ALTER TABLE ONLY public.ambulantes
 
 
 --
--- Name: ambulantes ambulantes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ambulantes ambulantes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.ambulantes
@@ -564,7 +612,7 @@ ALTER TABLE ONLY public.ambulantes
 
 
 --
--- Name: atividade atividade_nome_atividade_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: atividade atividade_nome_atividade_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.atividade
@@ -572,7 +620,7 @@ ALTER TABLE ONLY public.atividade
 
 
 --
--- Name: atividade atividade_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: atividade atividade_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.atividade
@@ -580,7 +628,7 @@ ALTER TABLE ONLY public.atividade
 
 
 --
--- Name: documento documento_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: documento documento_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.documento
@@ -588,7 +636,7 @@ ALTER TABLE ONLY public.documento
 
 
 --
--- Name: etapa_formalizacao etapa_formalizacao_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: etapa_formalizacao etapa_formalizacao_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.etapa_formalizacao
@@ -596,7 +644,7 @@ ALTER TABLE ONLY public.etapa_formalizacao
 
 
 --
--- Name: formalizacao formalizacao_cnpj_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: formalizacao formalizacao_cnpj_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.formalizacao
@@ -604,7 +652,7 @@ ALTER TABLE ONLY public.formalizacao
 
 
 --
--- Name: formalizacao formalizacao_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: formalizacao formalizacao_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.formalizacao
@@ -612,7 +660,7 @@ ALTER TABLE ONLY public.formalizacao
 
 
 --
--- Name: historico_solicitacao historico_solicitacao_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: historico_solicitacao historico_solicitacao_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.historico_solicitacao
@@ -620,7 +668,7 @@ ALTER TABLE ONLY public.historico_solicitacao
 
 
 --
--- Name: mensagem mensagem_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: mensagem mensagem_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.mensagem
@@ -628,7 +676,7 @@ ALTER TABLE ONLY public.mensagem
 
 
 --
--- Name: mensagens mensagens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: mensagens mensagens_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.mensagens
@@ -636,7 +684,7 @@ ALTER TABLE ONLY public.mensagens
 
 
 --
--- Name: pontos_venda pontos_venda_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pontos_venda pontos_venda_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pontos_venda
@@ -644,7 +692,7 @@ ALTER TABLE ONLY public.pontos_venda
 
 
 --
--- Name: solicitacao solicitacao_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: solicitacao solicitacao_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.solicitacao
@@ -652,7 +700,7 @@ ALTER TABLE ONLY public.solicitacao
 
 
 --
--- Name: usuario usuario_email_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: usuario usuario_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.usuario
@@ -660,7 +708,7 @@ ALTER TABLE ONLY public.usuario
 
 
 --
--- Name: usuario usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: usuario usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.usuario
@@ -668,7 +716,7 @@ ALTER TABLE ONLY public.usuario
 
 
 --
--- Name: usuarios usuarios_ambulante_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: usuarios usuarios_ambulante_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.usuarios
@@ -676,7 +724,7 @@ ALTER TABLE ONLY public.usuarios
 
 
 --
--- Name: usuarios usuarios_cpf_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: usuarios usuarios_cpf_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.usuarios
@@ -684,7 +732,7 @@ ALTER TABLE ONLY public.usuarios
 
 
 --
--- Name: usuarios usuarios_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: usuarios usuarios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.usuarios
@@ -692,14 +740,14 @@ ALTER TABLE ONLY public.usuarios
 
 
 --
--- Name: idx_mensagens_ambulante; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_mensagens_ambulante; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_mensagens_ambulante ON public.mensagens USING btree (ambulante_id, criado_em DESC);
 
 
 --
--- Name: etapa_formalizacao etapa_formalizacao_id_formalizacao_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: etapa_formalizacao etapa_formalizacao_id_formalizacao_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.etapa_formalizacao
@@ -707,7 +755,15 @@ ALTER TABLE ONLY public.etapa_formalizacao
 
 
 --
--- Name: historico_solicitacao historico_solicitacao_id_solicitacao_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: solicitacao fk_solicitacao_avaliador; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.solicitacao
+    ADD CONSTRAINT fk_solicitacao_avaliador FOREIGN KEY (id_avaliador) REFERENCES public.usuarios(id);
+
+
+--
+-- Name: historico_solicitacao historico_solicitacao_id_solicitacao_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.historico_solicitacao
@@ -715,7 +771,7 @@ ALTER TABLE ONLY public.historico_solicitacao
 
 
 --
--- Name: mensagem mensagem_id_destinatario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: mensagem mensagem_id_destinatario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.mensagem
@@ -723,7 +779,7 @@ ALTER TABLE ONLY public.mensagem
 
 
 --
--- Name: mensagem mensagem_id_remetente_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: mensagem mensagem_id_remetente_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.mensagem
@@ -731,7 +787,7 @@ ALTER TABLE ONLY public.mensagem
 
 
 --
--- Name: mensagem mensagem_id_solicitacao_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: mensagem mensagem_id_solicitacao_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.mensagem
@@ -739,7 +795,7 @@ ALTER TABLE ONLY public.mensagem
 
 
 --
--- Name: mensagens mensagens_ambulante_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: mensagens mensagens_ambulante_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.mensagens
@@ -747,7 +803,7 @@ ALTER TABLE ONLY public.mensagens
 
 
 --
--- Name: mensagens mensagens_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: mensagens mensagens_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.mensagens
@@ -755,7 +811,7 @@ ALTER TABLE ONLY public.mensagens
 
 
 --
--- Name: pontos_venda pontos_venda_ambulante_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: pontos_venda pontos_venda_ambulante_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pontos_venda
@@ -763,7 +819,7 @@ ALTER TABLE ONLY public.pontos_venda
 
 
 --
--- Name: usuarios usuarios_ambulante_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: usuarios usuarios_ambulante_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.usuarios
@@ -774,5 +830,5 @@ ALTER TABLE ONLY public.usuarios
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 8gkn9dNTuSD12sFp8NN4KcWCabCw7KtF4qh6KTkP5W5R6AxU0k0dwHQbS8rBqDC
+\unrestrict bUdo0vqTSJvlIif4GjdVDUaPyAqmNNzZ1o6ejLYgLAi1dGABBaIGUtCesgLFiJH
 
