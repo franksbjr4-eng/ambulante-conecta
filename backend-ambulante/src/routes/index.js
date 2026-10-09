@@ -8,5 +8,6 @@ module.exports = (pool) => {
   router.use(require("./solicitacoes")(pool));
   router.use(require("./avaliacoes")(pool));
   router.use(require("./mensagens")(pool));
+  router.use(require("./painel")(pool));
   return router;
 };
