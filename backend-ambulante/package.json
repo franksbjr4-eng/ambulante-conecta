@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node testar-tudo.js"
+    "test": "node testar-tudo.js",
+    "demo": "node scripts/preparar-demo.js --sim"
   },
   "keywords": [],
   "author": "",
