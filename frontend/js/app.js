@@ -1,4 +1,4 @@
-/* Ambulante Conecta — código compartilhado: sessão, menu, topo e resumo da página inicial.
+/* Ambulante Conecta — código compartilhado: sessão, menu por perfil, topo e resumo da página inicial.
    Depende de js/api.js (carregue-o antes). O estado local (localStorage) ficou só para a Formalização,
    que ainda não tem API; cadastro, login, solicitações e mensagens usam a API. */
 
@@ -26,15 +26,37 @@ function addMensagem(e, { de, assunto, texto, enviada = false }) {
 }
 const naoLidas = (e) => e.mensagens.filter((m) => !m.lida && !m.enviada).length;
 
-const menu = [
-  { id: "index",        href: "index.html",        icone: "⌂", texto: "Início" },
-  { id: "mapa",         href: "mapa.html",         icone: "⌖", texto: "Pontos de venda" },
-  { id: "formalizacao", href: "formalizacao.html", icone: "✓", texto: "Formalização" },
-  { id: "cadastro",     href: "cadastro.html",     icone: "☷", texto: "Cadastro" },
-  { id: "situacao",     href: "situacao.html",     icone: "◷", texto: "Solicitação" },
-  { id: "comunicacao",  href: "comunicacao.html",  icone: "✉", texto: "Comunicação", badge: true }
-];
-const rotulosMovel = { index: "Início", mapa: "Mapa", formalizacao: "Formalização", comunicacao: "Mensagens" };
+/* ---------- Menu por perfil ---------- */
+// Todos os itens possíveis. "movel" é o rótulo curto do menu inferior (celular).
+const itensMenu = {
+  index:           { href: "index.html",          icone: "⌂", texto: "Início",          movel: "Início" },
+  mapa:            { href: "mapa.html",           icone: "⌖", texto: "Pontos de venda", movel: "Mapa" },
+  formalizacao:    { href: "formalizacao.html",   icone: "✓", texto: "Formalização",    movel: "Formalização" },
+  cadastro:        { href: "cadastro.html",       icone: "☷", texto: "Cadastro",        movel: "Cadastro" },
+  situacao:        { href: "situacao.html",       icone: "◷", texto: "Solicitação",     movel: "Solicitação" },
+  comunicacao:     { href: "comunicacao.html",    icone: "✉", texto: "Comunicação",     movel: "Mensagens", badge: true },
+  painel:          { href: "painel.html",         icone: "▤", texto: "Painel",          movel: "Painel" },
+  mensagensGestor: { href: "painel.html#mensagens", icone: "✉", texto: "Mensagens",      movel: "Mensagens", badge: true },
+  login:           { href: "login.html",          icone: "⇥", texto: "Entrar",          movel: "Entrar" }
+};
+
+// Quais itens cada perfil vê (menu lateral e menu inferior)
+const menusPorPerfil = {
+  visitante: {
+    lateral: ["index", "mapa", "formalizacao", "cadastro", "situacao", "comunicacao"],
+    movel:   ["index", "mapa", "formalizacao", "comunicacao", "login"]
+  },
+  ambulante: {
+    lateral: ["index", "mapa", "formalizacao", "situacao", "comunicacao"],
+    movel:   ["index", "mapa", "formalizacao", "comunicacao", "situacao"]
+  },
+  gestor: {
+    lateral: ["index", "painel", "mensagensGestor", "mapa"],
+    movel:   ["index", "painel", "mensagensGestor", "mapa"]
+  }
+};
+
+const perfilAtual = () => Sessao.usuario()?.perfil || "visitante";
 
 const paginaAtual = (location.pathname.split("/").pop() || "index.html").replace(".html", "") || "index";
 let totalNaoLidas = 0; // vem da API quando há usuário logado
@@ -89,24 +111,22 @@ function renderTopo() {
 function renderMenu() {
   const nav = document.getElementById("nav");
   const movel = document.getElementById("mobileNav");
-  const atual = (id) => (id === paginaAtual ? ' aria-current="page"' : "");
+  const perfil = perfilAtual();
+  const { lateral, movel: idsMovel } = menusPorPerfil[perfil] || menusPorPerfil.visitante;
+  const atual = (href) => (href.replace(".html", "").split("#")[0] === paginaAtual && !href.includes("#") ? ' aria-current="page"' : "");
 
   if (nav) {
-    nav.innerHTML = menu.map((m) => {
+    nav.innerHTML = lateral.map((id) => {
+      const m = itensMenu[id];
       const badge = m.badge && totalNaoLidas ? `<span class="badge" aria-label="${totalNaoLidas} mensagens novas">${totalNaoLidas}</span>` : "";
-      return `<a href="${m.href}"${atual(m.id)}><span class="nav-ico" aria-hidden="true">${m.icone}</span>${m.texto}${badge}</a>`;
+      return `<a href="${m.href}"${atual(m.href)}><span class="nav-ico" aria-hidden="true">${m.icone}</span>${m.texto}${badge}</a>`;
     }).join("");
   }
   if (movel) {
-    const itens = Object.keys(rotulosMovel).map((id) => {
-      const m = menu.find((x) => x.id === id);
-      return { id, href: m.href, icone: m.icone, rotulo: rotulosMovel[id] };
-    });
-    // Último item: quem não entrou vê "Entrar"; quem entrou vê "Solicitação"
-    itens.push(Sessao.usuario()
-      ? { id: "situacao", href: "situacao.html", icone: "◷", rotulo: "Solicitação" }
-      : { id: "login", href: "login.html", icone: "⇥", rotulo: "Entrar" });
-    movel.innerHTML = itens.map((i) => `<a href="${i.href}"${atual(i.id)}><span aria-hidden="true">${i.icone}</span>${i.rotulo}</a>`).join("");
+    movel.innerHTML = idsMovel.map((id) => {
+      const m = itensMenu[id];
+      return `<a href="${m.href}"${atual(m.href)}><span aria-hidden="true">${m.icone}</span>${m.movel}</a>`;
+    }).join("");
   }
 }
 
@@ -133,10 +153,10 @@ async function renderResumo() {
     try { p = await chamarApi("/painel"); } catch (_) {}
     const n = (valor) => (p ? valor : "—");
     cards = [
-      { rotulo: "Solicitações pendentes", valor: n(p?.solicitacoes.pendentes), status: "Aguardando decisão", cor: p?.solicitacoes.pendentes ? "orange" : "gray", icone: "◷" },
+      { rotulo: "Solicitações pendentes", valor: n(p?.solicitacoes.pendentes), status: "Aguardando decisão", cor: p?.solicitacoes.pendentes ? "orange" : "gray", icone: "◷", href: "painel.html" },
       { rotulo: "Pontos disponíveis", valor: n(p?.pontos.disponiveis), status: "Para novas solicitações", cor: "green", icone: "⌖", href: "mapa.html" },
       { rotulo: "Ambulantes", valor: n(p?.ambulantes.total), status: p ? `${p.ambulantes.com_mei} com MEI` : "", cor: "blue", icone: "☷" },
-      { rotulo: "Mensagens", valor: n(p?.mensagens_nao_lidas), status: "Não lidas", cor: p?.mensagens_nao_lidas ? "red" : "gray", icone: "✉" }
+      { rotulo: "Mensagens", valor: n(p?.mensagens_nao_lidas), status: "Não lidas", cor: p?.mensagens_nao_lidas ? "red" : "gray", icone: "✉", href: "painel.html#mensagens" }
     ];
   } else {
     let minhas = [];
@@ -159,8 +179,12 @@ async function renderResumo() {
     return `<li>${s.href ? `<a class="card stat-link" href="${s.href}">${miolo}</a>` : `<div class="card stat-link">${miolo}</div>`}</li>`;
   }).join("");
 
-  // Quem já entrou não precisa do botão "Cadastrar dados"
+  // Ajustes da página inicial conforme o perfil
   if (usuario) document.querySelector('.hero-actions a[href="cadastro.html"]')?.setAttribute("hidden", "");
+  if (usuario?.perfil === "gestor") {
+    document.querySelector(".hero-actions")?.setAttribute("hidden", "");              // botões de ambulante
+    document.querySelector('[aria-labelledby="t-acoes"]')?.setAttribute("hidden", ""); // ações rápidas de ambulante
+  }
 }
 
 function mostrarAviso(msg) {
