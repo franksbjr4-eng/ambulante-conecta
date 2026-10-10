@@ -64,6 +64,8 @@ function conferir(rotulo, obtido, esperado) {
     conferir("RN02: sem MEI não solicita", (await chamar("POST", "/solicitacoes", { ponto_id: ponto }, tokenB)).status, 422);
     r = await chamar("POST", "/solicitacoes", { ponto_id: ponto }, tokenA);
     conferir("RN03: solicitação criada como Pendente", r.status, 201);
+        const msgs = await chamar("GET", "/mensagens", null, tokenA);
+    conferir("RN03: aviso de solicitação em análise", msgs.dados.some((m) => m.assunto === "Solicitação recebida"), true);
     console.log("     status:", r.dados.status);
     conferir("solicitação pendente duplicada", (await chamar("POST", "/solicitacoes", { ponto_id: ponto }, tokenA)).status, 409);
   }

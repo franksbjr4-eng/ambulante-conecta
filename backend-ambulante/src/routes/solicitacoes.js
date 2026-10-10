@@ -43,6 +43,15 @@ module.exports = (pool) => {
                    status_solicitacao AS status, data_solicitacao AS criado_em`,
         [ambulanteId, pontoId]
       );
+            // RN03: aviso automático de que o pedido está em análise (se falhar, a solicitação continua valendo)
+      try {
+        await pool.query(
+          "INSERT INTO mensagens (ambulante_id, remetente, assunto, texto) VALUES ($1, 'sistema', $2, $3)",
+          [ambulanteId, "Solicitação recebida", `Sua solicitação (nº ${r.rows[0].id}) foi registrada como Pendente e está em análise.`]
+        );
+      } catch (e) {
+        console.error("Não foi possível criar o aviso da solicitação:", e.message);
+      }
       res.status(201).json(r.rows[0]);
     } catch (e) {
       console.error("Erro ao criar solicitação:", e.message);
